@@ -20,7 +20,7 @@ def apply_css(env: DeliveryEnvironment = None):
         overlay = f"<div style='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;' class='weather-{weather.lower()}'></div>"
         st.markdown(overlay, unsafe_allow_html=True)
         
-    if env and env.notifications:
+    if env and hasattr(env, "notifications") and env.notifications:
         notif_html = "<div style='position:fixed;top:20px;right:20px;z-index:10000;'>"
         for n in env.notifications:
             notif_html += f"<div class='floating-notif'>{n}</div>"
