@@ -14,9 +14,12 @@ def apply_css(env: DeliveryEnvironment = None):
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
         pass
-    if env and env.traffic.weather != "Clear":
-        overlay = f"<div style='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;' class='weather-{env.traffic.weather.lower()}'></div>"
+    
+    weather = getattr(env.traffic, "weather", "Clear") if env and env.traffic else "Clear"
+    if weather != "Clear":
+        overlay = f"<div style='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;' class='weather-{weather.lower()}'></div>"
         st.markdown(overlay, unsafe_allow_html=True)
+        
     if env and env.notifications:
         notif_html = "<div style='position:fixed;top:20px;right:20px;z-index:10000;'>"
         for n in env.notifications:
@@ -60,7 +63,7 @@ def render_dashboard(env: DeliveryEnvironment):
     st.markdown(f"""
     <div class='card'>
         <h3>Dashboard</h3>
-        <p>Simulation Time: <b>{env.time.strftime('%H:%M')}</b> | Weather: <b>{env.traffic.weather}</b> | Rank: <b>{rank}</b></p>
+        <p>Simulation Time: <b>{env.time.strftime('%H:%M')}</b> | Weather: <b>{getattr(env.traffic, 'weather', 'Clear')}</b> | Rank: <b>{rank}</b></p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -123,7 +126,8 @@ def main():
         c_pred, c_log = st.columns(2)
         with c_pred:
             st.markdown("<div class='card prediction-box'><h4>🔮 AI Prediction</h4>", unsafe_allow_html=True)
-            if env.traffic.weather == "Storm":
+            current_weather = getattr(env.traffic, "weather", "Clear") if env and env.traffic else "Clear"
+            if current_weather == "Storm":
                 st.markdown("⚠️ **Expected delay spike in next 2 mins** due to severe weather.", unsafe_allow_html=True)
             elif len(env.orders) > 4:
                 st.markdown("📈 **High order volume** detected. Agents will experience fatigue soon.", unsafe_allow_html=True)
