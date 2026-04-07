@@ -94,7 +94,7 @@ def main():
         lvl = st.selectbox("Level", ["Easy", "Medium", "Hard"])
         mode = st.radio("Assignment Mode", ["AI", "Manual"])
         strategy = st.selectbox("Routing Strategy", ["Balanced", "Fastest Route", "Least Traffic"])
-        chaos = st.toggle("🌪️ Chaos Mode", value=env.chaos_mode)
+        chaos = st.toggle("🌪️ Chaos Mode", value=getattr(env, "chaos_mode", False))
         speed = st.slider("Time Warp (Tick Speed)", 0.1, 2.0, 0.5, 0.1)
         st.session_state.speed = speed
         
