@@ -67,9 +67,9 @@ def render_dashboard(env: DeliveryEnvironment):
     </div>
     """, unsafe_allow_html=True)
     
-    cols = st.columns(len(metrics))
+    cols = st.columns(3)
     for i, (k, v) in enumerate(metrics.items()):
-        cols[i].markdown(f"<div class='card' style='text-align:center;'><div style='font-size:14px;color:#64748b;'>{k}</div><div class='metric-value'>{v}</div></div>", unsafe_allow_html=True)
+        cols[i % 3].markdown(f"<div class='card' style='text-align:center; padding: 10px; margin-bottom: 10px;'><div style='font-size:14px;color:#64748b; white-space: nowrap; font-weight: bold;'>{k}</div><div class='metric-value'>{v}</div></div>", unsafe_allow_html=True)
 
     if env.history:
         st.markdown("<div class='card'><h4>Performance Growth</h4>", unsafe_allow_html=True)
@@ -102,7 +102,11 @@ def main():
         if c1.button("▶️ Start/Resume", use_container_width=True): st.session_state.running = True
         if c2.button("⏸️ Pause", use_container_width=True): st.session_state.running = False
         if st.button("🔄 Reset Simulation", use_container_width=True):
-            st.session_state.env = DeliveryEnvironment(level=lvl, manual_mode=(mode=="Manual"), chaos=chaos)
+            try:
+                st.session_state.env = DeliveryEnvironment(level=lvl, manual_mode=(mode=="Manual"), chaos=chaos)
+            except TypeError:
+                st.session_state.env = DeliveryEnvironment(level=lvl, manual_mode=(mode=="Manual"))
+                st.session_state.env.chaos_mode = chaos
             st.session_state.env.strategy = strategy
             st.session_state.running = False
             if hasattr(st, "rerun"): st.rerun()
@@ -137,7 +141,7 @@ def main():
 
         with c_log:
             st.markdown("<div class='card'><h4>🧠 Why this decision?</h4>", unsafe_allow_html=True)
-            if env.ai_decisions:
+            if hasattr(env, "ai_decisions") and env.ai_decisions:
                 for l in env.ai_decisions[:3]: 
                     st.markdown(f"<span style='font-size:14px;color:#475569;'>• {l}</span>", unsafe_allow_html=True)
             else:
