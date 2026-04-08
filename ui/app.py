@@ -2,6 +2,11 @@ import time
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import sys
+import os
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from env import DeliveryEnvironment
 from utils.helpers import get_rank
