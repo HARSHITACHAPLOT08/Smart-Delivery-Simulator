@@ -15,7 +15,9 @@ st.set_page_config(page_title="Smart Delivery Simulator", layout="wide", initial
 
 def apply_css(env: DeliveryEnvironment = None):
     try:
-        with open("ui/styles.css") as f:
+        # Use absolute path based on current file location for Hugging Face Spaces compatibility
+        css_path = os.path.join(os.path.dirname(__file__), "styles.css")
+        with open(css_path) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
         pass
