@@ -12,8 +12,9 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 if root_dir not in sys.path:
     sys.path.insert(0, root_dir)
 
-# Import and run the main app
-# This loads all the Streamlit UI and logic from ui/app.py
-if __name__ == "__main__":
-    # Import the UI module which contains all streamlit code
-    import ui.app
+# Import and run the main app directly
+# This executes the Streamlit app from ui/app.py
+from ui.app import main
+
+# Run the main app function
+main()
